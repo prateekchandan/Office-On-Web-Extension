@@ -263,10 +263,45 @@ function ReadAllData(responseBodyReader) {
     Read();
 }
 
+function GetDocumentTypeHadler(mimeType) {
+    switch (mimeType) {
+        case "application/msword":
+        case "application/vnd.ms-word":
+        case "application/vnd.msword":
+        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        case "application/vnd.wordprocessing-openxml":
+        case "application/vnd.ces-quickword":
+        case "application/vnd.ms-word.document.macroEnabled.12":
+        case "application/vnd.ms-word.document.macroenabled.12":
+        case "application/vnd.ms-word.document.12":
+            return "ms-word";
+        case "application/mspowerpoint":
+        case "application/vnd.ms-powerpoint":
+        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+        case "application/vnd.ces-quickpoint":
+        case "application/vnd.presentation-openxml":
+        case "application/vnd.presentation-openxmlm":
+        case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
+        case "application/vnd.ms-powerpoint.presentation.macroenabled.12":
+            return "ms-powerpoint";
+        case "application/msexcel":
+        case "application/vnd.ms-excel":
+        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+        case "application/vnd.ces-quicksheet":
+        case "application/vnd.spreadsheet-openxml":
+        case "application/vnd.ms-excel.sheet.macroEnabled.12":
+        case "application/vnd.ms-excel.sheet.macroenabled.12":
+        case "text/csv":
+            return "ms-excel";
+    }
+}
+
 browser_api.then(function(browserApi) {
     document.getElementById("test").innerHTML += "<div>URL : " + browserApi.streamInfo_.originalUrl + "</div>";
     document.getElementById("test").innerHTML += "<div>MimeType : " + browserApi.streamInfo_.mimeType + "</div>";
     document.getElementById("test").innerHTML += "<div>StreamURL : " + browserApi.streamInfo_.streamUrl + "</div>";
+    document.getElementById("test").innerHTML += 
+        "<a href='"+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+":ofe|u|"+browserApi.streamInfo_.originalUrl+"'>Edit in "+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+"</div>";
 
     fetch(browserApi.streamInfo_.streamUrl ).then(function(e) {
         ReadAllData(e.body.getReader());
