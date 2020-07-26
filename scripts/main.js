@@ -233,10 +233,46 @@ function createBrowserApi() {
 
 
 browser_api = createBrowserApiForMimeHandlerView();
-  
-browser_api.then(function(stream_info) {
-    document.getElementById("test").innerHTML += "Hello World";
+data = ""
 
+/**
+ * Convert an Uint8Array into a string.
+ *
+ * @returns {String}
+ */
+function Decodeuint8arr(uint8array){
+    return new TextDecoder("utf-8").decode(uint8array);
+}
+
+function ReadAllData(responseBodyReader) {
+    document.getElementById("test").innerHTML += "<div> Contents: </div>";
+    function Read() {
+        responseBodyReader.read().then(function(val) {
+            temp = Decodeuint8arr(val.value)
+            data += temp
+            document.getElementById("test").innerHTML += "<div>"+temp+"</div>";
+            if(val.done) {
+                console.log("Reading complete" + data.length)
+            } else {
+                console.log("Reading more" + data.length)
+                Read()
+            }
+        })
+    }
+
+    Read();
+}
+
+browser_api.then(function(browserApi) {
+    document.getElementById("test").innerHTML += "<div>URL : " + browserApi.streamInfo_.originalUrl + "</div>";
+    document.getElementById("test").innerHTML += "<div>MimeType : " + browserApi.streamInfo_.mimeType + "</div>";
+    document.getElementById("test").innerHTML += "<div>StreamURL : " + browserApi.streamInfo_.streamUrl + "</div>";
+
+    fetch(browserApi.streamInfo_.streamUrl ).then(function(e) {
+        ReadAllData(e.body.getReader());
+    })
+
+    console.log(browserApi.streamInfo_);
 });
 
 

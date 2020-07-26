@@ -6,7 +6,6 @@
         "default_popup": "views/mainPopup.html",
         "default_title": "Office on Web"
     },
-    "default_locale": "en",
     "description": "Office on Web",
     "file_handlers": {
         "documents": {
