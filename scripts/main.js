@@ -372,7 +372,7 @@ function SetupToolbar(streamInfo) {
   document.getElementById("toolbar").style.backgroundColor = GetToolbarForMimeType(streamInfo.mimeType);
   document.getElementById("app-title").innerHTML = GetAppTitleForMimeType(streamInfo.mimeType);
   // Get the file name
-  document.getElementById("file-name").innerHTML = streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0] + " (Read-Only)";
+  document.getElementById("file-name").innerHTML = decodeURI(streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]) + " (Read-Only)";
 
   document.getElementById("edit-btn").innerHTML = "Edit in " +  GetAppTitleForMimeType(streamInfo.mimeType);
   document.getElementById("edit-btn").href = GetDocumentTypeHadler(streamInfo.mimeType)+":ofe|u|"+streamInfo.originalUrl;
