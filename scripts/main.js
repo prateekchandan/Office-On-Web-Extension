@@ -296,12 +296,28 @@ function GetDocumentTypeHadler(mimeType) {
     }
 }
 
+function GetURLPrefixForMimeType(type) {
+  switch(GetDocumentTypeHadler(type)) {
+    case "ms-word":
+      return "wordcs";
+    case "ms-powerpoint":
+      return "pptcs";
+    case "ms-excel":
+      return "excelcs";
+  }
+}
 
-function GetPdfStream(url){
+function GetUrlExtension( url ) {
+  return url.split(/[#?]/)[0].split('.').pop().trim();
+}
+
+function GetPdfStream(streamInfo){
       $(function() {
       
       // todo: remove hardcoded docx type and wordcs url. url should be based on input type.
-      var link = 'https://wordcs.officeapps.live.com/document/export/pdf?url=' + url + '&input=docx';
+      var link = 'https://' + GetURLPrefixForMimeType(streamInfo.mimeType) +
+        '.edog.officeapps.live.com/document/export/pdf?url=' + streamInfo.originalUrl +
+        '&input=' + GetUrlExtension(streamInfo.originalUrl);
 
       var xhr = new XMLHttpRequest();
       xhr.open('GET',link,true);
@@ -309,7 +325,7 @@ function GetPdfStream(url){
       xhr.setRequestHeader("X-ClientCorrelationId","41b9f6c7-ea85-4859-9a97-be4628897113");
       xhr.setRequestHeader("X-PassThroughDownloadHeaders","");
       xhr.setRequestHeader("X-ClientName","EdgeTeam");
-      xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
+      //xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
 
       xhr.onload = function(e){
         if (this.status == 200) {
@@ -318,6 +334,7 @@ function GetPdfStream(url){
           document.getElementById("pdf-content").innerHTML = '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
         }else{
             console.log(this.status);
+            document.getElementById("pdf-content").innerHTML = "Failed to load document. :("
             alert('Download failed...!  Please Try again!!!');
         }
       };
@@ -334,7 +351,7 @@ browser_api.then(function(browserApi) {
     document.getElementById("test").innerHTML += 
         "<a href='"+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+":ofe|u|"+browserApi.streamInfo_.originalUrl+"'>Edit in "+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+"</div>";
 
-    GetPdfStream(browserApi.streamInfo_.originalUrl);
+    GetPdfStream(browserApi.streamInfo_);
 });
 
 

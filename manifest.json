@@ -106,8 +106,9 @@
         "metricsPrivate",
         "storage",
         "unlimitedStorage",
-        "https://pptcs.officeapps.live.com/*",
-        "https://wordcs.officeapps.live.com/*"
+        "https://pptcs.edog.officeapps.live.com/*",
+        "https://wordcs.edog.officeapps.live.com/*",
+        "https://excelcs.edog.officeapps.live.com/*"
     ],
     "version": "134.193.207",
     "web_accessible_resources": [ "views/app.html"]
