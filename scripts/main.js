@@ -400,9 +400,68 @@ function SetupToolbar(streamInfo) {
         GetDocumentTypeHadler(streamInfo.mimeType) +
         ':ofe|u|' +
         streamInfo.originalUrl;
+
+    document.getElementById('save').onclick = function () {
+        executeSaveAs(
+            decodeURI(
+                streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
+            )
+        );
+    };
 }
 
+let mimeType_ = "";
+
 browser_api.then(function (browserApi) {
+    mimeType_ = browserApi.streamInfo_.mimeType;
     SetupToolbar(browserApi.streamInfo_);
     GetPdfStream(browserApi.streamInfo_);
 });
+
+
+function executeSaveAs(fileName) {
+  chrome.fileSystem.chooseEntry(
+      {
+        type: 'saveFile',
+        suggestedName: fileName,
+        // Saving the file with .pdf extension
+        accepts: [{extensions: [fileName.split(".").pop()]}]
+      },
+      writeUsingEntry);
+}
+
+const writeUsingEntry = entry => {
+  if (chrome.runtime.lastError) {
+    if (chrome.runtime.lastError.message !== 'User cancelled') {
+        console.log(
+            'chrome.fileSystem.chooseEntry failed: ' +
+            chrome.runtime.lastError.message);
+    }
+    return;
+  }
+  entry.createWriter(writer => {
+    writer.onwriteend = (event) => {
+      // Return early in case error has occurred, without trying to
+      // truncate the file. |onerror| is still called after returning.
+      if (event.currentTarget && event.currentTarget.error) {
+        return;
+      }
+      // |writer.length| is the length of the file content,
+      // |event.currentTarget.position| is the seek position after
+      // write (which for non error case is same as data length).
+      // Truncate is called when |writer.length| is not same as
+      // current seek position.
+      if (writer.length !== event.currentTarget.position) {
+        event.currentTarget.truncate(event.currentTarget.position);
+        return;
+      }
+      chrome.fileSystem.getDisplayPath(entry, function(path) {
+        promiseResolver.resolve({status: 'Saved', path, saveInPlace});
+      });
+    };
+    writer.onerror = (event) => {
+    };
+    writer.write(
+        new Blob([result.dataToSave], {type: mimeType_}));
+  });
+};
