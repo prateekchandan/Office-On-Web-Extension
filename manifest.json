@@ -105,7 +105,9 @@
         "identity.email",
         "metricsPrivate",
         "storage",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "https://pptcs.officeapps.live.com/*",
+        "https://wordcs.officeapps.live.com/*"
     ],
     "version": "134.193.207",
     "web_accessible_resources": [ "views/app.html"]
