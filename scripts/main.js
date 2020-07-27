@@ -314,7 +314,6 @@ function GetUrlExtension( url ) {
 function GetPdfStream(streamInfo){
       $(function() {
       
-      // todo: remove hardcoded docx type and wordcs url. url should be based on input type.
       var link = 'https://' + GetURLPrefixForMimeType(streamInfo.mimeType) +
         '.edog.officeapps.live.com/document/export/pdf?url=' + streamInfo.originalUrl +
         '&input=' + GetUrlExtension(streamInfo.originalUrl);
@@ -333,9 +332,13 @@ function GetPdfStream(streamInfo){
 
           document.getElementById("pdf-content").innerHTML = '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
         }else{
-            console.log(this.status);
-            document.getElementById("pdf-content").innerHTML = "Failed to load document. :("
-            alert('Download failed...!  Please Try again!!!');
+            this.response.text().then(function(str) {
+              document.getElementById("pdf-content").innerHTML = "<div>Failed to load document: " +  str +" :(</div>"
+              document.getElementById("pdf-content").innerHTML += "<div>Retriable = " +  xhr.getResponseHeader("X-IsRetriable") +"</div>"
+              document.getElementById("pdf-content").innerHTML += "<div>Response code = " +  xhr.status +"</div>"
+              alert("Failed to load document: " + str);
+            })
+            
         }
       };
       xhr.send();
