@@ -261,6 +261,13 @@ function ReadAllData(responseBodyReader) {
     }
 
     Read();
+
+    // base64 pdf encoded pdf stream.
+    let pdfStream = "JVBERi0xLjcKJaDypPQKMSAwIG9iaiA8PAogIC9UeXBlIC9DYXRhbG9nCiAgL1BhZ2VzIDIgMCBSCj4+CmVuZG9iagoyIDAgb2JqIDw8CiAgL1R5cGUgL1BhZ2VzCiAgL01lZGlhQm94IFsgMCAwIDIwMCAyMDAgXQogIC9Db3VudCAxCiAgL0tpZHMgWyAzIDAgUiBdCj4+CmVuZG9iagozIDAgb2JqIDw8CiAgL1R5cGUgL1BhZ2UKICAvUGFyZW50IDIgMCBSCiAgL1Jlc291cmNlcyA8PAogICAgL0ZvbnQgPDwKICAgICAgL0YxIDQgMCBSCiAgICAgIC9GMiA1IDAgUgogICAgPj4KICA+PgogIC9Db250ZW50cyA2IDAgUgo+PgplbmRvYmoKNCAwIG9iaiA8PAogIC9UeXBlIC9Gb250CiAgL1N1YnR5cGUgL1R5cGUxCiAgL0Jhc2VGb250IC9UaW1lcy1Sb21hbgo+PgplbmRvYmoKNSAwIG9iaiA8PAogIC9UeXBlIC9Gb250CiAgL1N1YnR5cGUgL1R5cGUxCiAgL0Jhc2VGb250IC9IZWx2ZXRpY2EKPj4KZW5kb2JqCjYgMCBvYmogPDwKPj4Kc3RyZWFtCkJUCjIwIDUwIFRkCi9GMSAxMiBUZgooSGVsbG8sIHdvcmxkISkgVGoKMCA1MCBUZAovRjIgMTYgVGYKKEdvb2RieWUsIHdvcmxkISkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iagp4cmVmCjAgNwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDA2OCAwMDAwMCBuIAowMDAwMDAwMTYxIDAwMDAwIG4gCjAwMDAwMDAzMDMgMDAwMDAgbiAKMDAwMDAwMDM4MSAwMDAwMCBuIAowMDAwMDAwNDU3IDAwMDAwIG4gCnRyYWlsZXI8PCAvUm9vdCAxIDAgUiAvU2l6ZSA3ID4+CnN0YXJ0eHJlZgo1NzgKJSVFT0YK";
+    // Creating an iframe to render PDF.
+    document.getElementById("test").innerHTML += "<iframe width='100%' height='100%' src='data:application/pdf;base64, "
+                                                + encodeURI(pdfStream) + "'></iframe>";
+
 }
 
 function GetDocumentTypeHadler(mimeType) {
