@@ -1,0 +1,7 @@
+body {
+    margin: 0px;
+}
+
+#pdf-content iframe {
+    border: 0px;
+}

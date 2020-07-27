@@ -315,7 +315,7 @@ function GetPdfStream(url){
         if (this.status == 200) {
           var url = window.URL.createObjectURL(new Blob([this.response], {type: 'application/pdf'}));
 
-          document.getElementById("test").innerHTML += '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
+          document.getElementById("pdf-content").innerHTML = '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
         }else{
             console.log(this.status);
             alert('Download failed...!  Please Try again!!!');
@@ -328,9 +328,9 @@ function GetPdfStream(url){
 
 
 browser_api.then(function(browserApi) {
-    document.getElementById("test").innerHTML += "<div>URL : " + browserApi.streamInfo_.originalUrl + "</div>";
-    document.getElementById("test").innerHTML += "<div>MimeType : " + browserApi.streamInfo_.mimeType + "</div>";
-    document.getElementById("test").innerHTML += "<div>StreamURL : " + browserApi.streamInfo_.streamUrl + "</div>";
+    // document.getElementById("test").innerHTML += "<div>URL : " + browserApi.streamInfo_.originalUrl + "</div>";
+    // document.getElementById("test").innerHTML += "<div>MimeType : " + browserApi.streamInfo_.mimeType + "</div>";
+    // document.getElementById("test").innerHTML += "<div>StreamURL : " + browserApi.streamInfo_.streamUrl + "</div>";
     document.getElementById("test").innerHTML += 
         "<a href='"+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+":ofe|u|"+browserApi.streamInfo_.originalUrl+"'>Edit in "+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+"</div>";
 
