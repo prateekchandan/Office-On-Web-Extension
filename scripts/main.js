@@ -233,15 +233,14 @@ function createBrowserApi() {
 
 
 browser_api = createBrowserApiForMimeHandlerView();
-data = ""
 
 /**
  * Convert an Uint8Array into a string.
  *
  * @returns {String}
  */
-function Decodeuint8arr(uint8array){
-    return new TextDecoder("utf-8").decode(uint8array);
+function Decodeuint8arr(uint8array) {
+    return new TextDecoder('utf-8').decode(uint8array);
 }
 
 // function ReadAllData(responseBodyReader) {
@@ -265,123 +264,145 @@ function Decodeuint8arr(uint8array){
 
 function GetDocumentTypeHadler(mimeType) {
     switch (mimeType) {
-        case "application/msword":
-        case "application/vnd.ms-word":
-        case "application/vnd.msword":
-        case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        case "application/vnd.wordprocessing-openxml":
-        case "application/vnd.ces-quickword":
-        case "application/vnd.ms-word.document.macroEnabled.12":
-        case "application/vnd.ms-word.document.macroenabled.12":
-        case "application/vnd.ms-word.document.12":
-            return "ms-word";
-        case "application/mspowerpoint":
-        case "application/vnd.ms-powerpoint":
-        case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
-        case "application/vnd.ces-quickpoint":
-        case "application/vnd.presentation-openxml":
-        case "application/vnd.presentation-openxmlm":
-        case "application/vnd.ms-powerpoint.presentation.macroEnabled.12":
-        case "application/vnd.ms-powerpoint.presentation.macroenabled.12":
-            return "ms-powerpoint";
-        case "application/msexcel":
-        case "application/vnd.ms-excel":
-        case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-        case "application/vnd.ces-quicksheet":
-        case "application/vnd.spreadsheet-openxml":
-        case "application/vnd.ms-excel.sheet.macroEnabled.12":
-        case "application/vnd.ms-excel.sheet.macroenabled.12":
-        case "text/csv":
-            return "ms-excel";
+        case 'application/msword':
+        case 'application/vnd.ms-word':
+        case 'application/vnd.msword':
+        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+        case 'application/vnd.wordprocessing-openxml':
+        case 'application/vnd.ces-quickword':
+        case 'application/vnd.ms-word.document.macroEnabled.12':
+        case 'application/vnd.ms-word.document.macroenabled.12':
+        case 'application/vnd.ms-word.document.12':
+            return 'ms-word';
+        case 'application/mspowerpoint':
+        case 'application/vnd.ms-powerpoint':
+        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+        case 'application/vnd.ces-quickpoint':
+        case 'application/vnd.presentation-openxml':
+        case 'application/vnd.presentation-openxmlm':
+        case 'application/vnd.ms-powerpoint.presentation.macroEnabled.12':
+        case 'application/vnd.ms-powerpoint.presentation.macroenabled.12':
+            return 'ms-powerpoint';
+        case 'application/msexcel':
+        case 'application/vnd.ms-excel':
+        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        case 'application/vnd.ces-quicksheet':
+        case 'application/vnd.spreadsheet-openxml':
+        case 'application/vnd.ms-excel.sheet.macroEnabled.12':
+        case 'application/vnd.ms-excel.sheet.macroenabled.12':
+        case 'text/csv':
+            return 'ms-excel';
     }
 }
 
 function GetURLPrefixForMimeType(type) {
-  switch(GetDocumentTypeHadler(type)) {
-    case "ms-word":
-      return "wordcs";
-    case "ms-powerpoint":
-      return "pptcs";
-    case "ms-excel":
-      return "excelcs";
-  }
+    switch (GetDocumentTypeHadler(type)) {
+        case 'ms-word':
+            return 'wordcs';
+        case 'ms-powerpoint':
+            return 'pptcs';
+        case 'ms-excel':
+            return 'excelcs';
+    }
 }
 
-function GetUrlExtension( url ) {
-  return url.split(/[#?]/)[0].split('.').pop().trim();
+function GetUrlExtension(url) {
+    return url.split(/[#?]/)[0].split('.').pop().trim();
 }
 
-function GetPdfStream(streamInfo){
-      $(function() {
-      
-      var link = 'https://' + GetURLPrefixForMimeType(streamInfo.mimeType) +
-        '.edog.officeapps.live.com/document/export/pdf?url=' + streamInfo.originalUrl +
-        '&input=' + GetUrlExtension(streamInfo.originalUrl);
+function GetPdfStream(streamInfo) {
+    $(function () {
+        var link =
+            'https://' +
+            GetURLPrefixForMimeType(streamInfo.mimeType) +
+            '.edog.officeapps.live.com/document/export/pdf?url=' +
+            streamInfo.originalUrl +
+            '&input=' +
+            GetUrlExtension(streamInfo.originalUrl);
 
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET',link,true);
-      xhr.responseType = 'blob';
-      xhr.setRequestHeader("X-ClientCorrelationId","41b9f6c7-ea85-4859-9a97-be4628897113");
-      xhr.setRequestHeader("X-PassThroughDownloadHeaders","");
-      xhr.setRequestHeader("X-ClientName","EdgeTeam");
-      //xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', link, true);
+        xhr.responseType = 'blob';
+        xhr.setRequestHeader(
+            'X-ClientCorrelationId',
+            '41b9f6c7-ea85-4859-9a97-be4628897113'
+        );
+        xhr.setRequestHeader('X-PassThroughDownloadHeaders', '');
+        xhr.setRequestHeader('X-ClientName', 'EdgeTeam');
+        //xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
 
-      xhr.onload = function(e){
-        if (this.status == 200) {
-          var url = window.URL.createObjectURL(new Blob([this.response], {type: 'application/pdf'}));
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+                var url = window.URL.createObjectURL(
+                    new Blob([this.response], { type: 'application/pdf' })
+                );
 
-          document.getElementById("pdf-content").innerHTML = '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
-        }else{
-            this.response.text().then(function(str) {
-              document.getElementById("pdf-content").innerHTML = "<div>Failed to load document: " +  str +" :(</div>"
-              document.getElementById("pdf-content").innerHTML += "<div>Retriable = " +  xhr.getResponseHeader("X-IsRetriable") +"</div>"
-              document.getElementById("pdf-content").innerHTML += "<div>Response code = " +  xhr.status +"</div>"
-              alert("Failed to load document: " + str);
-            })
-            
-        }
-      };
-      xhr.send();
-
+                document.getElementById('pdf-content').innerHTML =
+                    '<iframe src="' +
+                    url +
+                    '" width="100%" height="100%"></iframe>';
+            } else {
+                this.response.text().then(function (str) {
+                    document.getElementById('pdf-content').innerHTML =
+                        '<div>Failed to load document: ' + str + ' :(</div>';
+                    document.getElementById('pdf-content').innerHTML +=
+                        '<div>Retriable = ' +
+                        xhr.getResponseHeader('X-IsRetriable') +
+                        '</div>';
+                    document.getElementById('pdf-content').innerHTML +=
+                        '<div>Response code = ' + xhr.status + '</div>';
+                    alert('Failed to load document: ' + str);
+                });
+            }
+        };
+        xhr.send();
     });
 }
 
 function GetToolbarForMimeType(type) {
-  switch(GetDocumentTypeHadler(type)) {
-    case "ms-word":
-      return "#2C579A";
-    case "ms-powerpoint":
-      return "#B8472A";
-    case "ms-excel":
-      return "#207346";
-  }
+    switch (GetDocumentTypeHadler(type)) {
+        case 'ms-word':
+            return '#2C579A';
+        case 'ms-powerpoint':
+            return '#B8472A';
+        case 'ms-excel':
+            return '#207346';
+    }
 }
 
 function GetAppTitleForMimeType(type) {
-  switch(GetDocumentTypeHadler(type)) {
-    case "ms-word":
-      return "Word";
-    case "ms-powerpoint":
-      return "PowerPoint";
-    case "ms-excel":
-      return "Excel";
-  }
+    switch (GetDocumentTypeHadler(type)) {
+        case 'ms-word':
+            return 'Word';
+        case 'ms-powerpoint':
+            return 'PowerPoint';
+        case 'ms-excel':
+            return 'Excel';
+    }
 }
 
 function SetupToolbar(streamInfo) {
-  document.getElementById("toolbar").style.backgroundColor = GetToolbarForMimeType(streamInfo.mimeType);
-  document.getElementById("app-title").innerHTML = GetAppTitleForMimeType(streamInfo.mimeType);
-  // Get the file name
-  document.getElementById("file-name").innerHTML = decodeURI(streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]) + " (Read-Only)";
+    document.getElementById(
+        'toolbar'
+    ).style.backgroundColor = GetToolbarForMimeType(streamInfo.mimeType);
+    document.getElementById('app-title').innerHTML = GetAppTitleForMimeType(
+        streamInfo.mimeType
+    );
+    // Get the file name
+    document.getElementById('file-name').innerHTML =
+        decodeURI(
+            streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
+        ) + ' (Read-Only)';
 
-  document.getElementById("edit-btn").innerHTML = "Edit in " +  GetAppTitleForMimeType(streamInfo.mimeType);
-  document.getElementById("edit-btn").href = GetDocumentTypeHadler(streamInfo.mimeType)+":ofe|u|"+streamInfo.originalUrl;
+    document.getElementById('edit-btn').innerHTML =
+        'Edit in ' + GetAppTitleForMimeType(streamInfo.mimeType);
+    document.getElementById('edit-btn').href =
+        GetDocumentTypeHadler(streamInfo.mimeType) +
+        ':ofe|u|' +
+        streamInfo.originalUrl;
 }
 
-browser_api.then(function(browserApi) {
+browser_api.then(function (browserApi) {
     SetupToolbar(browserApi.streamInfo_);
     GetPdfStream(browserApi.streamInfo_);
 });
-
-
-  
