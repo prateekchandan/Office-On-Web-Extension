@@ -244,24 +244,24 @@ function Decodeuint8arr(uint8array){
     return new TextDecoder("utf-8").decode(uint8array);
 }
 
-function ReadAllData(responseBodyReader) {
-    document.getElementById("test").innerHTML += "<div> Contents: </div>";
-    function Read() {
-        responseBodyReader.read().then(function(val) {
-            temp = Decodeuint8arr(val.value)
-            data += temp
-            document.getElementById("test").innerHTML += "<div>"+temp+"</div>";
-            if(val.done) {
-                console.log("Reading complete" + data.length)
-            } else {
-                console.log("Reading more" + data.length)
-                Read()
-            }
-        })
-    }
+// function ReadAllData(responseBodyReader) {
+//     document.getElementById("test").innerHTML += "<div> Contents: </div>";
+//     function Read() {
+//         responseBodyReader.read().then(function(val) {
+//             temp = Decodeuint8arr(val.value)
+//             data += temp
+//             document.getElementById("test").innerHTML += "<div>"+temp+"</div>";
+//             if(val.done) {
+//                 console.log("Reading complete" + data.length)
+//             } else {
+//                 console.log("Reading more" + data.length)
+//                 Read()
+//             }
+//         })
+//     }
 
-    Read();
-}
+//     Read();
+// }
 
 function GetDocumentTypeHadler(mimeType) {
     switch (mimeType) {
@@ -346,14 +346,40 @@ function GetPdfStream(streamInfo){
     });
 }
 
+function GetToolbarForMimeType(type) {
+  switch(GetDocumentTypeHadler(type)) {
+    case "ms-word":
+      return "#2C579A";
+    case "ms-powerpoint":
+      return "#B8472A";
+    case "ms-excel":
+      return "#207346";
+  }
+}
+
+function GetAppTitleForMimeType(type) {
+  switch(GetDocumentTypeHadler(type)) {
+    case "ms-word":
+      return "Word";
+    case "ms-powerpoint":
+      return "PowerPoint";
+    case "ms-excel":
+      return "Excel";
+  }
+}
+
+function SetupToolbar(streamInfo) {
+  document.getElementById("toolbar").style.backgroundColor = GetToolbarForMimeType(streamInfo.mimeType);
+  document.getElementById("app-title").innerHTML = GetAppTitleForMimeType(streamInfo.mimeType);
+  // Get the file name
+  document.getElementById("file-name").innerHTML = streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0] + " (Read-Only)";
+
+  document.getElementById("edit-btn").innerHTML = "Edit in " +  GetAppTitleForMimeType(streamInfo.mimeType);
+  document.getElementById("edit-btn").href = GetDocumentTypeHadler(streamInfo.mimeType)+":ofe|u|"+streamInfo.originalUrl;
+}
 
 browser_api.then(function(browserApi) {
-    // document.getElementById("test").innerHTML += "<div>URL : " + browserApi.streamInfo_.originalUrl + "</div>";
-    // document.getElementById("test").innerHTML += "<div>MimeType : " + browserApi.streamInfo_.mimeType + "</div>";
-    // document.getElementById("test").innerHTML += "<div>StreamURL : " + browserApi.streamInfo_.streamUrl + "</div>";
-    document.getElementById("test").innerHTML += 
-        "<a href='"+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+":ofe|u|"+browserApi.streamInfo_.originalUrl+"'>Edit in "+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+"</div>";
-
+    SetupToolbar(browserApi.streamInfo_);
     GetPdfStream(browserApi.streamInfo_);
 });
 

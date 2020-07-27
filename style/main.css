@@ -5,3 +5,61 @@ body {
 #pdf-content iframe {
     border: 0px;
 }
+
+#toolbar {
+    height: 41px;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left:0px;
+    background-color: #FCFCFC;
+    display: inline-flex;
+}
+
+#dots {
+    padding: 10px;
+}
+
+#app-title {
+    color: white;
+    font-size: 20px;
+    padding: 7px;
+}
+
+#file-name {
+    color: white;
+    font-size: 15px;
+    padding: 10px;
+    font-weight: 200;
+}
+
+.vertical-line {
+    height: 26px;
+    margin: 7px;
+    width: 1px;
+    background: white;
+}
+
+#edit-btn-div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#edit-btn {
+    background-color: rgba(200, 200, 200, 0.1);
+}
+
+#edit-btn:hover, #edit-btn:focus {
+    background-color: rgba(200, 200, 200, 0.4);
+}
+
+#edit-btn, #edit-btn:hover, #edit-btn:focus {
+    color: white;
+    text-decoration: none;
+    font-size: 20px;
+    display: block;
+    font-weight: 300;
+    padding: 7px;
+}
