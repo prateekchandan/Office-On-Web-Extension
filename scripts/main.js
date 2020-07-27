@@ -297,37 +297,32 @@ function GetDocumentTypeHadler(mimeType) {
 }
 
 
-function GetPdfStream(){
+function GetPdfStream(url){
       $(function() {
-        var params = {
-            // Request parameters
-        };
       
-      // harcoded URL and doc type.
-        $.ajax({
-            url: "https://wordcs.officeapps.live.com/document/export/pdf?url=https://www.husd.org/cms/lib/AZ01001450/Centricity/Domain/2560/Beatles%20Lyrics%202020.docx&input=docx&" + $.param(params),
-            beforeSend: function(xhrObj){
-                // Request headers
-                xhrObj.setRequestHeader("X-ClientCorrelationId","41b9f6c7-ea85-4859-9a97-be4628897113");
-                xhrObj.setRequestHeader("X-PassThroughDownloadHeaders","");
-                xhrObj.setRequestHeader("X-ClientName","EdgeTeam");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
-            },
-            type: "GET",
-            // Request body
-            data: "{body}",
-        })
-        .done(function(data) {
-            window.stream = data;
-            console.log(data);
-            console.log('base64');
-            document.getElementById("test").innerHTML += "<iframe width='100%' height='100%' src='data:application/pdf;base64, "
-                                                         + encodeURI(window.btoa(unescape(encodeURIComponent(data)))) + "'></iframe>";
-            alert("success");
-        })
-        .fail(function() {
-            alert("error");
-        });
+      // todo: remove hardcoded docx type and wordcs url. url should be based on input type.
+      var link = 'https://wordcs.officeapps.live.com/document/export/pdf?url=' + url + '&input=docx';
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET',link,true);
+      xhr.responseType = 'blob';
+      xhr.setRequestHeader("X-ClientCorrelationId","41b9f6c7-ea85-4859-9a97-be4628897113");
+      xhr.setRequestHeader("X-PassThroughDownloadHeaders","");
+      xhr.setRequestHeader("X-ClientName","EdgeTeam");
+      xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
+
+      xhr.onload = function(e){
+        if (this.status == 200) {
+          var url = window.URL.createObjectURL(new Blob([this.response], {type: 'application/pdf'}));
+
+          document.getElementById("test").innerHTML += '<iframe src="' + url  + '" width="100%" height="100%"></iframe>';
+        }else{
+            console.log(this.status);
+            alert('Download failed...!  Please Try again!!!');
+        }
+      };
+      xhr.send();
+
     });
 }
 
@@ -339,13 +334,7 @@ browser_api.then(function(browserApi) {
     document.getElementById("test").innerHTML += 
         "<a href='"+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+":ofe|u|"+browserApi.streamInfo_.originalUrl+"'>Edit in "+GetDocumentTypeHadler(browserApi.streamInfo_.mimeType)+"</div>";
 
-
-    GetPdfStream();
-    fetch(browserApi.streamInfo_.streamUrl ).then(function(e) {
-        ReadAllData(e.body.getReader());
-    })
-
-    console.log(browserApi.streamInfo_);
+    GetPdfStream(browserApi.streamInfo_.originalUrl);
 });
 
 
