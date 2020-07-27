@@ -343,13 +343,13 @@ function GetPdfStream(streamInfo) {
                     '" width="100%" height="100%"></iframe>';
             } else {
                 this.response.text().then(function (str) {
-                    document.getElementById('pdf-content').innerHTML =
+                    document.getElementById('pdf-content-message').innerHTML =
                         '<div>Failed to load document: ' + str + ' :(</div>';
-                    document.getElementById('pdf-content').innerHTML +=
+                    document.getElementById('pdf-content-message').innerHTML +=
                         '<div>Retriable = ' +
                         xhr.getResponseHeader('X-IsRetriable') +
                         '</div>';
-                    document.getElementById('pdf-content').innerHTML +=
+                    document.getElementById('pdf-content-message').innerHTML +=
                         '<div>Response code = ' + xhr.status + '</div>';
                     alert('Failed to load document: ' + str);
                 });
