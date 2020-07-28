@@ -381,7 +381,7 @@ function GetAppTitleForMimeType(type) {
     }
 }
 
-function SetupToolbar(streamInfo) {
+function SetupToolbarAndDocTitle(streamInfo) {
     document.getElementById(
         'toolbar'
     ).style.backgroundColor = GetToolbarForMimeType(streamInfo.mimeType);
@@ -389,10 +389,11 @@ function SetupToolbar(streamInfo) {
         streamInfo.mimeType
     );
     // Get the file name
-    document.getElementById('file-name').innerHTML =
-        decodeURI(
+    const fileName = decodeURI(
             streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
-        ) + ' (Read-Only)';
+        );
+    document.getElementById('file-name').innerHTML = fileName + ' (Read-Only)';
+    document.title = fileName;
 
     document.getElementById('edit-btn').innerHTML =
         'Edit in ' + GetAppTitleForMimeType(streamInfo.mimeType);
@@ -414,7 +415,7 @@ let mimeType_ = "";
 
 browser_api.then(function (browserApi) {
     mimeType_ = browserApi.streamInfo_.mimeType;
-    SetupToolbar(browserApi.streamInfo_);
+    SetupToolbarAndDocTitle(browserApi.streamInfo_);
     GetPdfStream(browserApi.streamInfo_);
 });
 
