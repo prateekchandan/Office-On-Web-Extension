@@ -1,12 +1,18 @@
 {
     "background": {
-        "scripts": ["scripts/background.js"]
+        "scripts": [
+            "scripts/background.js"
+        ]
     },
     "browser_action": {
+        "default_icon": {
+            "20": "assets/icon_20.png",
+            "40": "assets/icon.png"
+        },
         "default_popup": "views/mainPopup.html",
-        "default_title": "Office on Web"
+        "default_title": "Microsoft Office documents in Microsoft Edge"
     },
-    "description": "Office on Web",
+    "description": "Microsoft Office documents in Microsoft Edge",
     "file_handlers": {
         "documents": {
             "extensions": [
@@ -111,5 +117,7 @@
         "https://excelcs.edog.officeapps.live.com/*"
     ],
     "version": "134.193.207",
-    "web_accessible_resources": [ "views/app.html"]
+    "web_accessible_resources": [
+        "views/app.html"
+    ]
 }
