@@ -359,6 +359,64 @@ function GetPdfStream(streamInfo) {
     });
 }
 
+function GetPdfStreamForLocal(streamResponse, streamInfo) {
+  streamResponse.read().then(function(val) {
+    let docStream = Decodeuint8arr(val.value);
+    console.log(docStream);
+
+    // sending post request with body as document stream.
+    $(function () {
+        var link =
+            'https://' +
+            GetURLPrefixForMimeType(streamInfo.mimeType) +
+            '.edog.officeapps.live.com/document/export/pdf?input=docx';
+            // GetUrlExtension(streamInfo.originalUrl);
+        console.log(link);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', link, true);
+        xhr.responseType = 'blob';
+        xhr.setRequestHeader(
+            'X-ClientCorrelationId',
+            '41b9f6c7-ea85-4859-9a97-be4628897113'
+        );
+        xhr.setRequestHeader('X-PassThroughDownloadHeaders', '');
+        xhr.setRequestHeader('X-ClientName', 'EdgeTeam');
+        //xhr.setRequestHeader("Ocp-Apim-Subscription-Key","34cd9e8623cc454a9333f497f882b3ad");
+
+        xhr.onload = function (e) {
+            if (this.status == 200) {
+                var url = window.URL.createObjectURL(
+                    new Blob([this.response], { type: 'application/pdf' })
+                );
+
+                document.getElementById('pdf-content').innerHTML =
+                    '<iframe src="' +
+                    url +
+                    '" width="100%" height="100%"></iframe>';
+            } else {
+            console.log(this.response);
+                this.response.text().then(function (str) {
+                    document.getElementById('pdf-content-message').innerHTML =
+                        '<div>Failed to load document: ' + str + ' :(</div>';
+                    document.getElementById('pdf-content-message').innerHTML +=
+                        '<div>Retriable = ' +
+                        xhr.getResponseHeader('X-IsRetriable') +
+                        '</div>';
+                    document.getElementById('pdf-content-message').innerHTML +=
+                        '<div>Response code = ' + xhr.status + '</div>';
+                    alert('Failed to load document: ' + str);
+                });
+            }
+        };
+        xhr.send(docStream);
+    });
+
+
+
+  });
+}
+
 function GetToolbarForMimeType(type) {
     switch (GetDocumentTypeHadler(type)) {
         case 'ms-word':
@@ -416,7 +474,11 @@ let mimeType_ = "";
 browser_api.then(function (browserApi) {
     mimeType_ = browserApi.streamInfo_.mimeType;
     SetupToolbarAndDocTitle(browserApi.streamInfo_);
-    GetPdfStream(browserApi.streamInfo_);
+    // GetPdfStream(browserApi.streamInfo_);
+    fetch(browserApi.streamInfo_.streamUrl ).then(function(e) {
+        GetPdfStreamForLocal(e.body.getReader(), browserApi.streamInfo_);
+    })
+
 });
 
 
