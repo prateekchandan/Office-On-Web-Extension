@@ -415,8 +415,12 @@ let mimeType_ = "";
 
 browser_api.then(function (browserApi) {
     mimeType_ = browserApi.streamInfo_.mimeType;
-    SetupToolbarAndDocTitle(browserApi.streamInfo_);
-    GetPdfStream(browserApi.streamInfo_);
+    // SetupToolbarAndDocTitle(browserApi.streamInfo_);
+    // GetPdfStream(browserApi.streamInfo_);
+    document.getElementById("toolbar").outerHTML = "";
+    document.getElementById("pdf-content").innerHTML =  '<iframe src="https://view.officeapps.live.com/op/view.aspx?src=' +
+    browserApi.streamInfo_.originalUrl +
+    '" width="100%" height="100%"></iframe>';;
 });
 
 
