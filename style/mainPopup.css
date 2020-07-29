@@ -32,7 +32,7 @@ span {
 a{
 	display: block;
 	box-sizing: border-box;
-	padding: 8px 13px 8px 21px;
+	padding: 10px 13px 10px 13px;
 	box-shadow: 0 1.6px 3.6px rgba(0,0,0,.13), 0 0.3px 0.9px rgba(0,0,0,.1);
 	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 	cursor:pointer;
@@ -44,7 +44,7 @@ i{
 	font-size: 10px;
     line-height: 10px;
     vertical-align: top;
-    margin-top: 13px;
+    margin-top: 11px;
     float: left;
 	width:15px;
 }
