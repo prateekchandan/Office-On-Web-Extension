@@ -7,12 +7,11 @@ body {
 }
 
 #toolbar {
-    height: 41px;
+    height: 48px;
     width: 100%;
     position: absolute;
     top: 0px;
     left: 0px;
-    background-color: #fcfcfc;
     display: inline-flex;
 }
 
@@ -41,6 +40,7 @@ body {
 }
 
 #edit-btn-div {
+    height: 48px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -49,6 +49,7 @@ body {
 
 #edit-btn {
     background-color: rgba(200, 200, 200, 0.1);
+    border-radius: 5px;
 }
 
 #edit-btn:hover,
@@ -76,10 +77,11 @@ body {
 
 #buttons {
     position: absolute;
-    top: 50%;
+    top: 0%;
     right: 0%;
     padding-right: 10px;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
+    margin-top: 6px;
 }
 
 .toolbar-button {

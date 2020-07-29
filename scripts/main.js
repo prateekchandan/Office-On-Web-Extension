@@ -423,9 +423,10 @@ browser_api.then(function (browserApi) {
 
     mimeType_ = browserApi.streamInfo_.mimeType;
     browserApi.streamInfo_.originalUrl = addRedirectedQueryParam(browserApi.streamInfo_.originalUrl);
-    // SetupToolbarAndDocTitle(browserApi.streamInfo_);
-    // GetPdfStream(browserApi.streamInfo_);
-    document.getElementById('toolbar').outerHTML = '';
+    document.getElementById('edit-btn').href =
+        GetDocumentTypeHadler(mimeType_) +
+        ':ofe|u|' +
+        browserApi.streamInfo_.originalUrl;
     document.getElementById('pdf-content').innerHTML =
         '<iframe src="https://view.officeapps.live.com/op/view.aspx?src=' +
         browserApi.streamInfo_.originalUrl +
