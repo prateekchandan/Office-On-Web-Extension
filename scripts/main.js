@@ -433,10 +433,17 @@ browser_api.then(function (browserApi) {
 
     mimeType_ = browserApi.streamInfo_.mimeType;
     browserApi.streamInfo_.originalUrl = addRedirectedQueryParam(browserApi.streamInfo_.originalUrl);
-    document.getElementById('edit-btn').href =
+    
+    // Uncomment below lines for demo and replace the URL
+    // document.getElementById('edit-btn').href = "http://www.bing.com";
+    // document.getElementById('edit-btn').target = "_blank";
+    
+    // comment start for demo
+    document.getElementById('edit-btn').href = 
         GetDocumentTypeHadler(mimeType_) +
         ':ofe|u|' +
         browserApi.streamInfo_.originalUrl;
+    // comment end
     document.getElementById('pdf-content').innerHTML =
         '<iframe allow="fullscreen" src="https://view.officeapps.live.com/op/view.aspx?src=' +
         browserApi.streamInfo_.originalUrl +
