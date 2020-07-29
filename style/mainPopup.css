@@ -1,13 +1,14 @@
 body {
     margin: 0;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family: SegoeUI,Helvetica,Arial,sans-serif;
     font-size: 13px;
     user-select: none;
 }
 
 #main {
     margin: 10px;
-	width: 280px
+    width: 280px;
+    margin-bottom: 15px;
 }
 
 #panel {
@@ -34,7 +35,6 @@ a{
 	box-sizing: border-box;
 	padding: 10px 13px 10px 13px;
 	box-shadow: 0 1.6px 3.6px rgba(0,0,0,.13), 0 0.3px 0.9px rgba(0,0,0,.1);
-	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 	cursor:pointer;
 	text-decoration:none;
 	
@@ -55,14 +55,12 @@ i{
     font-size: 16px;
     color: #212121;
     padding-left: 5px;
-	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 }
 
 .subtitle{
 	display: -webkit-flex;
     font-size: 12px;
     padding-left: 5px;
-	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 	color:black;
 }
 
@@ -72,4 +70,21 @@ i{
 
 .box:hover {
     box-shadow:0px 0px 10px #00000057
+}
+
+#office-icon-main {
+    width: 70px;
+    height: 70px;
+    margin-left: -17px;
+    margin-right: -5px;
+}
+
+#popup-title {
+    font-size: 15px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.office-icon {
+    margin-right: 5px;
 }

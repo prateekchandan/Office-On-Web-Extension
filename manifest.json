@@ -6,8 +6,8 @@
     },
     "browser_action": {
         "default_icon": {
-            "20": "assets/CreateIcon.png",
-            "40": "assets/CreateIcon.png"
+            "20": "assets/icon_plus.png",
+            "40": "assets/icon_plus.png"
         },
         "default_popup": "views/mainPopup.html",
         "default_title": "Microsoft Office documents in Microsoft Edge"
@@ -120,7 +120,7 @@
 		"https://www.office.com/launch/excel/*",
 		"https://www.office.com/launch/word/*"
     ],
-    "version": "134.193.207",
+    "version": "1",
     "web_accessible_resources": [
         "views/app.html"
     ]
