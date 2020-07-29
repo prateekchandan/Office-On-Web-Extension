@@ -7,7 +7,7 @@ body {
 
 #main {
     margin: 10px;
-	width: 250px
+	width: 280px
 }
 
 #panel {
@@ -32,7 +32,7 @@ span {
 a{
 	display: block;
 	box-sizing: border-box;
-	padding: 14px 13px 14px 21px;
+	padding: 8px 13px 8px 21px;
 	box-shadow: 0 1.6px 3.6px rgba(0,0,0,.13), 0 0.3px 0.9px rgba(0,0,0,.1);
 	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 	cursor:pointer;
