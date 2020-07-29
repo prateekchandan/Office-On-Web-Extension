@@ -65,3 +65,11 @@ i{
 	font-family: SegoeUI,Helvetica,Arial,sans-serif;
 	color:black;
 }
+
+.box{
+    margin: 5px;
+}
+
+.box:hover {
+    box-shadow:0px 0px 10px #00000057
+}
