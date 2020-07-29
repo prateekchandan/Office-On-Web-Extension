@@ -414,7 +414,15 @@ function SetupToolbarAndDocTitle(streamInfo) {
 let mimeType_ = "";
 
 browser_api.then(function (browserApi) {
+    if (isAlreadyRedirected(browserApi.streamInfo_.originalUrl)) {
+      chrome.downloads.download({
+        url: browserApi.streamInfo_.originalUrl},
+        function(downloadId) {chrome.tabs.remove(browserApi.streamInfo_.tabId);});
+      return;
+    }
+
     mimeType_ = browserApi.streamInfo_.mimeType;
+    browserApi.streamInfo_.originalUrl = addRedirectedQueryParam(browserApi.streamInfo_.originalUrl);
     // SetupToolbarAndDocTitle(browserApi.streamInfo_);
     // GetPdfStream(browserApi.streamInfo_);
     document.getElementById('toolbar').outerHTML = '';
@@ -427,6 +435,23 @@ browser_api.then(function (browserApi) {
     );
     document.title = fileName;
 });
+
+function isAlreadyRedirected(originalUrl) {
+  if (originalUrl.indexOf('?') >= 0) {
+    var queryParams = originalUrl.split('?')[1];
+    return queryParams.indexOf('edgeRedirected') != -1;
+  }
+
+  return false;
+}
+
+function addRedirectedQueryParam(originalUrl) {
+  if (originalUrl.indexOf('?') >= 0) {
+    return originalUrl + '&edgeRedirected';
+  }
+
+  return originalUrl + '?edgeRedirected';
+}
 
 
 function executeSaveAs(fileName) {
