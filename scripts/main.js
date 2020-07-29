@@ -413,7 +413,17 @@ function SetupToolbarAndDocTitle(streamInfo) {
 
 let mimeType_ = "";
 
+function IsWebURL(ulr_str) {
+  return (ulr_str.indexOf("http") == 0);
+}
+
 browser_api.then(function (browserApi) {
+    if(!IsWebURL(browserApi.streamInfo_.originalUrl)) {
+      chrome.downloads.download({
+        url: browserApi.streamInfo_.originalUrl}, null);
+      return;
+    }
+
     if (isAlreadyRedirected(browserApi.streamInfo_.originalUrl)) {
       chrome.downloads.download({
         url: browserApi.streamInfo_.originalUrl},
