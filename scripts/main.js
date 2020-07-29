@@ -428,7 +428,7 @@ browser_api.then(function (browserApi) {
         ':ofe|u|' +
         browserApi.streamInfo_.originalUrl;
     document.getElementById('pdf-content').innerHTML =
-        '<iframe src="https://view.officeapps.live.com/op/view.aspx?src=' +
+        '<iframe allow="fullscreen" src="https://view.officeapps.live.com/op/view.aspx?src=' +
         browserApi.streamInfo_.originalUrl +
         '" width="100%" height="100%"></iframe>';
     const fileName = decodeURI(
