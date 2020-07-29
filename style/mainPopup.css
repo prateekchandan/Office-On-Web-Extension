@@ -7,7 +7,7 @@ body {
 
 #main {
     margin: 10px;
-    width: 300px
+	width: 250px
 }
 
 #panel {
@@ -18,12 +18,50 @@ body {
 img {
     vertical-align: middle;
     display: table-cell;
-    margin-right: 1em;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
+    margin-top: 2px;
+    float: left;
 }
 
 span {
     vertical-align: middle;
     display: table-cell;
+}
+
+a{
+	display: block;
+	box-sizing: border-box;
+	padding: 14px 13px 14px 21px;
+	box-shadow: 0 1.6px 3.6px rgba(0,0,0,.13), 0 0.3px 0.9px rgba(0,0,0,.1);
+	font-family: SegoeUI,Helvetica,Arial,sans-serif;
+	cursor:pointer;
+	text-decoration:none;
+	
+}
+
+i{
+	font-size: 10px;
+    line-height: 10px;
+    vertical-align: top;
+    margin-top: 13px;
+    float: left;
+	width:15px;
+}
+
+.title{
+	display: -webkit-flex;
+    font-weight: 600;
+    font-size: 16px;
+    color: #212121;
+    padding-left: 5px;
+	font-family: SegoeUI,Helvetica,Arial,sans-serif;
+}
+
+.subtitle{
+	display: -webkit-flex;
+    font-size: 12px;
+    padding-left: 5px;
+	font-family: SegoeUI,Helvetica,Arial,sans-serif;
+	color:black;
 }

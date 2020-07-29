@@ -6,8 +6,8 @@
     },
     "browser_action": {
         "default_icon": {
-            "20": "assets/icon_20.png",
-            "40": "assets/icon.png"
+            "20": "assets/CreateIcon.png",
+            "40": "assets/CreateIcon.png"
         },
         "default_popup": "views/mainPopup.html",
         "default_title": "Microsoft Office documents in Microsoft Edge"
@@ -112,9 +112,13 @@
         "metricsPrivate",
         "storage",
         "unlimitedStorage",
+		"tabs",
         "https://pptcs.edog.officeapps.live.com/*",
         "https://wordcs.edog.officeapps.live.com/*",
-        "https://excelcs.edog.officeapps.live.com/*"
+        "https://excelcs.edog.officeapps.live.com/*",		
+		"https://www.office.com/launch/powerpoint/*",
+		"https://www.office.com/launch/excel/*",
+		"https://www.office.com/launch/word/*"
     ],
     "version": "134.193.207",
     "web_accessible_resources": [
