@@ -322,10 +322,7 @@ async function OnGetStreamData(stream, streamInfo) {
         console.log(this.status);
         if (this.status <= 201) {
             const data = JSON.parse(this.response);
-            window.open(data.webUrl);
-            chrome.tabs.getCurrent(function(tab) {
-              chrome.tabs.remove(tab.id, function() { });
-            });
+            chrome.tabs.update({url: data.webUrl});
         } else {
           alert(this.response);
         }
