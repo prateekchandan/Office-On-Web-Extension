@@ -304,17 +304,39 @@ function GetUrlExtension(url) {
     return url.split(/[#?]/)[0].split('.').pop().trim();
 }
 
-function OnGetStreamData(stream) {
-
+async function OnGetStreamData(stream, streamInfo) {
+    var link =
+        'https://graph.microsoft.com/v1.0/me/drive/root:/localFiles/test.' +
+        GetUrlExtension(streamInfo.originalUrl) +
+        ':/content?@name.conflictBehavior=replace';
+    var xhr = new XMLHttpRequest();
+    xhr.open('PUT', link, true);
+    xhr.setRequestHeader('Content-type', 'application/octet-stream');
+    // TODO: Instead of harcoding aut token, get actual one
+    xhr.setRequestHeader(
+        'Authorization',
+        'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJub25jZSI6IndISzltenVNVEFYNm9qa2xXNzhFY1lCNzdtcTV1SHl6Q1VXbC1hVUtaWkkiLCJhbGciOiJSUzI1NiIsIng1dCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyIsImtpZCI6Im5PbzNaRHJPRFhFSzFqS1doWHNsSFJfS1hFZyJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC83MmY5ODhiZi04NmYxLTQxYWYtOTFhYi0yZDdjZDAxMWRiNDcvIiwiaWF0IjoxNjE2NjEyMDQxLCJuYmYiOjE2MTY2MTIwNDEsImV4cCI6MTYxNjYxNTk0MSwiYWNjdCI6MCwiYWNyIjoiMSIsImFjcnMiOlsidXJuOnVzZXI6cmVnaXN0ZXJzZWN1cml0eWluZm8iLCJ1cm46bWljcm9zb2Z0OnJlcTIiLCJ1cm46bWljcm9zb2Z0OnJlcTMiLCJjMSIsImMyIiwiYzMiLCJjNCIsImM1IiwiYzYiLCJjNyIsImM4IiwiYzkiLCJjMTAiLCJjMTEiLCJjMTIiLCJjMTMiLCJjMTQiLCJjMTUiLCJjMTYiLCJjMTciLCJjMTgiLCJjMTkiLCJjMjAiLCJjMjEiLCJjMjIiLCJjMjMiLCJjMjQiLCJjMjUiXSwiYWlvIjoiQVZRQXEvOFRBQUFBT2lqeTI1N01haDJzMDBlK0tGRXhDVlhvWGQ3N1FJUzBHaVdORkN0cm1oL0U2dXVvZlgwQkxHdk5Xd2R2UUZkNEdaK2x5b3dLZW5RdTFiNWJEY3VOdTJweWpoVHdJa0JRZi9HY3ZhbmZSUTg9IiwiYW1yIjpbInB3ZCIsInJzYSIsIm1mYSJdLCJhcHBfZGlzcGxheW5hbWUiOiJHcmFwaCBleHBsb3JlciAob2ZmaWNpYWwgc2l0ZSkiLCJhcHBpZCI6ImRlOGJjOGI1LWQ5ZjktNDhiMS1hOGFkLWI3NDhkYTcyNTA2NCIsImFwcGlkYWNyIjoiMCIsImNvbnRyb2xzIjpbImFwcF9yZXMiXSwiY29udHJvbHNfYXVkcyI6WyJkZThiYzhiNS1kOWY5LTQ4YjEtYThhZC1iNzQ4ZGE3MjUwNjQiLCIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAiXSwiZGV2aWNlaWQiOiIwMTYwODNlYi03OGYwLTQ1YTYtOTdmOC04YmM1OTkwZDgzMGYiLCJmYW1pbHlfbmFtZSI6IkNoYW5kYW4iLCJnaXZlbl9uYW1lIjoiUHJhdGVlayIsImlkdHlwIjoidXNlciIsImlwYWRkciI6IjIwMi4xNjguODUuMTgzIiwibmFtZSI6IlByYXRlZWsgQ2hhbmRhbiIsIm9pZCI6ImI5NDIzMzYwLWNhZDEtNDA4Zi1hZmQyLTZhZjNhMTUzYTRiYSIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS0yMTQ2NzczMDg1LTkwMzM2MzI4NS03MTkzNDQ3MDctMjExMzExMyIsInBsYXRmIjoiMyIsInB1aWQiOiIxMDAzQkZGRDk4ODk1NkU4IiwicmgiOiIwLkFSb0F2NGo1Y3ZHR3IwR1JxeTE4MEJIYlI3WElpOTc1MmJGSXFLMjNTTnB5VUdRYUFQdy4iLCJzY3AiOiJDYWxlbmRhcnMuUmVhZFdyaXRlIENvbnRhY3RzLlJlYWRXcml0ZSBEZXZpY2VNYW5hZ2VtZW50QXBwcy5SZWFkV3JpdGUuQWxsIERldmljZU1hbmFnZW1lbnRDb25maWd1cmF0aW9uLlJlYWQuQWxsIERldmljZU1hbmFnZW1lbnRDb25maWd1cmF0aW9uLlJlYWRXcml0ZS5BbGwgRGV2aWNlTWFuYWdlbWVudE1hbmFnZWREZXZpY2VzLlByaXZpbGVnZWRPcGVyYXRpb25zLkFsbCBEZXZpY2VNYW5hZ2VtZW50TWFuYWdlZERldmljZXMuUmVhZC5BbGwgRGV2aWNlTWFuYWdlbWVudE1hbmFnZWREZXZpY2VzLlJlYWRXcml0ZS5BbGwgRGV2aWNlTWFuYWdlbWVudFJCQUMuUmVhZC5BbGwgRGV2aWNlTWFuYWdlbWVudFJCQUMuUmVhZFdyaXRlLkFsbCBEZXZpY2VNYW5hZ2VtZW50U2VydmljZUNvbmZpZy5SZWFkLkFsbCBEZXZpY2VNYW5hZ2VtZW50U2VydmljZUNvbmZpZy5SZWFkV3JpdGUuQWxsIERpcmVjdG9yeS5BY2Nlc3NBc1VzZXIuQWxsIERpcmVjdG9yeS5SZWFkV3JpdGUuQWxsIEZpbGVzLlJlYWRXcml0ZS5BbGwgR3JvdXAuUmVhZFdyaXRlLkFsbCBJZGVudGl0eVJpc2tFdmVudC5SZWFkLkFsbCBNYWlsLlJlYWRXcml0ZSBNYWlsYm94U2V0dGluZ3MuUmVhZFdyaXRlIE5vdGVzLlJlYWRXcml0ZS5BbGwgb3BlbmlkIFBlb3BsZS5SZWFkIFByZXNlbmNlLlJlYWQgUHJlc2VuY2UuUmVhZC5BbGwgcHJvZmlsZSBSZXBvcnRzLlJlYWQuQWxsIFNpdGVzLlJlYWRXcml0ZS5BbGwgVGFza3MuUmVhZFdyaXRlIFVzZXIuUmVhZCBVc2VyLlJlYWRCYXNpYy5BbGwgVXNlci5SZWFkV3JpdGUgVXNlci5SZWFkV3JpdGUuQWxsIGVtYWlsIiwic2lnbmluX3N0YXRlIjpbImR2Y19tbmdkIiwiZHZjX2NtcCIsImttc2kiXSwic3ViIjoidng5MUZnM1RHZV9JVHN0OUE4TkpabDBpSElHS1RZV3VyNHdpeV9SVFlHWSIsInRlbmFudF9yZWdpb25fc2NvcGUiOiJXVyIsInRpZCI6IjcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0NyIsInVuaXF1ZV9uYW1lIjoicHJjaGFuQG1pY3Jvc29mdC5jb20iLCJ1cG4iOiJwcmNoYW5AbWljcm9zb2Z0LmNvbSIsInV0aSI6ImpfWkVVUzNtUkVPUkZyX2pJNG5rQUEiLCJ2ZXIiOiIxLjAiLCJ3aWRzIjpbImI3OWZiZjRkLTNlZjktNDY4OS04MTQzLTc2YjE5NGU4NTUwOSJdLCJ4bXNfc3QiOnsic3ViIjoiXzYzdUE3RjNWdHVOSFgyeGZ2VEZwTnNjNENCcVpVYnQxS1V2dFN5UkhUbyJ9LCJ4bXNfdGNkdCI6MTI4OTI0MTU0N30.Nf_MnDDGuC646_QJoIU9dpAwc_OjUSGq-89_AkROfFzmRWJFNcL6fZZe5TIzA4mZnbvSKFwdVrdfVqawNLyRoKH27jg91dSc7iqyNdQ47T9k1JHbJ9ruI0EfBqGbX5kA-PrVPKFeTGHUr18Gw1klJENjiLB0l4wopttTS0OcdoCDIzltjcJcMXJoXk2IjBBG5RvPPxF8aUZ5tSS3Zcfa9rf__v5g9EMaQM6G9oZ9R18I9-3N0gvFSGAjyQwLjOF677P0_qVRWsZs9E00F9l2U8fD9Y6FBF1bIH1Msj-FC93vq03gXkrwpEjf3xAvFGE9v99Pwgnp_ojDYOx0oRAo_Q'
+    );
+    xhr.onload = function (e) {
+        console.log(this.response);
+        console.log(this.status);
+        if (this.status <= 201) {
+            const data = JSON.parse(this.response);
+            window.open(data.webUrl);
+            chrome.tabs.getCurrent(function(tab) {
+              chrome.tabs.remove(tab.id, function() { });
+            });
+        } else {
+          alert(this.response);
+        }
+    };
+    xhr.send(stream);
 }
 
-function HandleLocalFile(streamInfo) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onload = function (e) {
-        OnGetStreamData(e.target.response);
-    };
-    xmlHttp.open('GET', streamInfo.streamUrl, true); // true for asynchronous
-    xmlHttp.send(null);
+function GetPdfStreamForLocal(streamResponse, streamInfo) {
+    streamResponse.read().then(function (val) {
+        OnGetStreamData(val.value, streamInfo);
+    });
 }
 
 function ConvertOnlineDocToPDFAndOpen(streamInfo) {
@@ -430,7 +452,9 @@ function IsWebURL(ulr_str) {
 
 browser_api.then(function (browserApi) {
     if (!IsWebURL(browserApi.streamInfo_.originalUrl)) {
-        HandleLocalFile(browserApi.streamInfo_);
+        fetch(browserApi.streamInfo_.streamUrl).then(function (e) {
+            GetPdfStreamForLocal(e.body.getReader(), browserApi.streamInfo_);
+        });
         return;
     }
 

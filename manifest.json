@@ -13,7 +13,6 @@
         "default_title": "Microsoft Office documents in Microsoft Edge"
     },
     "description": "Microsoft Office documents in Microsoft Edge",
-    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self';",
     "file_handlers": {
         "documents": {
             "extensions": [
