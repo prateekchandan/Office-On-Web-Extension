@@ -15,38 +15,38 @@ function lookupDefaultZoom(streamInfo) {
     // Webviews don't run in tabs so |streamInfo.tabId| is -1 when running within
     // a webview.
     if (!chrome.tabs || streamInfo.tabId < 0) {
-      return Promise.resolve(1);
+        return Promise.resolve(1);
     }
-  
-    return new Promise(function(resolve, reject) {
-      chrome.tabs.getZoomSettings(streamInfo.tabId, function(zoomSettings) {
-        resolve(zoomSettings.defaultZoomFactor);
-      });
+
+    return new Promise(function (resolve, reject) {
+        chrome.tabs.getZoomSettings(streamInfo.tabId, function (zoomSettings) {
+            resolve(zoomSettings.defaultZoomFactor);
+        });
     });
-  }
-  
-  /**
-   * Returns a promise that will resolve to the initial zoom factor
-   * upon starting the plugin. This may differ from the default zoom
-   * if, for example, the page is zoomed before the plugin is run.
-   * @param {!Object} streamInfo The stream object pointing to the data contained
-   *     in the PDF.
-   * @return {Promise<number>} A promise that will resolve to the initial zoom
-   *     factor.
-   */
-  function lookupInitialZoom(streamInfo) {
+}
+
+/**
+ * Returns a promise that will resolve to the initial zoom factor
+ * upon starting the plugin. This may differ from the default zoom
+ * if, for example, the page is zoomed before the plugin is run.
+ * @param {!Object} streamInfo The stream object pointing to the data contained
+ *     in the PDF.
+ * @return {Promise<number>} A promise that will resolve to the initial zoom
+ *     factor.
+ */
+function lookupInitialZoom(streamInfo) {
     // Webviews don't run in tabs so |streamInfo.tabId| is -1 when running within
     // a webview.
     if (!chrome.tabs || streamInfo.tabId < 0) {
-      return Promise.resolve(1);
+        return Promise.resolve(1);
     }
-  
-    return new Promise(function(resolve, reject) {
-      chrome.tabs.getZoom(streamInfo.tabId, resolve);
+
+    return new Promise(function (resolve, reject) {
+        chrome.tabs.getZoom(streamInfo.tabId, resolve);
     });
-  }
-  
-  // A class providing an interface to the browser.
+}
+
+// A class providing an interface to the browser.
 class BrowserApi {
     /**
      * @param {!Object} streamInfo The stream object which points to the data
@@ -57,12 +57,12 @@ class BrowserApi {
      * @param {BrowserApi.ZoomBehavior} zoomBehavior How to manage zoom.
      */
     constructor(streamInfo, defaultZoom, initialZoom, zoomBehavior) {
-      this.streamInfo_ = streamInfo;
-      this.defaultZoom_ = defaultZoom;
-      this.initialZoom_ = initialZoom;
-      this.zoomBehavior_ = zoomBehavior;
+        this.streamInfo_ = streamInfo;
+        this.defaultZoom_ = defaultZoom;
+        this.initialZoom_ = initialZoom;
+        this.zoomBehavior_ = zoomBehavior;
     }
-  
+
     /**
      * @param {!Object} streamInfo The stream object pointing to the data
      *     contained in the PDF.
@@ -70,22 +70,27 @@ class BrowserApi {
      * @return {Promise<BrowserApi>} A promise to a BrowserApi.
      */
     static create(streamInfo, zoomBehavior) {
-      return Promise
-          .all([lookupDefaultZoom(streamInfo), lookupInitialZoom(streamInfo)])
-          .then(function(zoomFactors) {
+        return Promise.all([
+            lookupDefaultZoom(streamInfo),
+            lookupInitialZoom(streamInfo)
+        ]).then(function (zoomFactors) {
             return new BrowserApi(
-                streamInfo, zoomFactors[0], zoomFactors[1], zoomBehavior);
-          });
+                streamInfo,
+                zoomFactors[0],
+                zoomFactors[1],
+                zoomBehavior
+            );
+        });
     }
-  
+
     /**
      * @return {Object} The stream info object pointing to the data contained in
      *     the PDF.
      */
     getStreamInfo() {
-      return this.streamInfo_;
+        return this.streamInfo_;
     }
-  
+
     /**
      * Sets the browser zoom.
      * @param {number} zoom The zoom factor to send to the browser.
@@ -93,29 +98,30 @@ class BrowserApi {
      *     has been updated.
      */
     setZoom(zoom) {
-      assert(
-          this.zoomBehavior_ === BrowserApi.ZoomBehavior.MANAGE,
-          'Viewer does not manage browser zoom.');
-      return new Promise((resolve, reject) => {
-        chrome.tabs.setZoom(this.streamInfo_.tabId, zoom, resolve);
-      });
+        assert(
+            this.zoomBehavior_ === BrowserApi.ZoomBehavior.MANAGE,
+            'Viewer does not manage browser zoom.'
+        );
+        return new Promise((resolve, reject) => {
+            chrome.tabs.setZoom(this.streamInfo_.tabId, zoom, resolve);
+        });
     }
-  
+
     /** @return {number} The default browser zoom factor. */
     getDefaultZoom() {
-      return this.defaultZoom_;
+        return this.defaultZoom_;
     }
-  
+
     /** @return {number} The initial browser zoom factor. */
     getInitialZoom() {
-      return this.initialZoom_;
+        return this.initialZoom_;
     }
-  
+
     /** @return {BrowserApi.ZoomBehavior} How to manage zoom. */
     getZoomBehavior() {
-      return this.zoomBehavior_;
+        return this.zoomBehavior_;
     }
-  
+
     /**
      * Adds an event listener to be notified when the browser zoom changes.
      *
@@ -123,114 +129,121 @@ class BrowserApi {
      *     factor.
      */
     addZoomEventListener(listener) {
-      if (!(this.zoomBehavior_ === BrowserApi.ZoomBehavior.MANAGE ||
-            this.zoomBehavior_ === BrowserApi.ZoomBehavior.PROPAGATE_PARENT)) {
-        return;
-      }
-  
-      chrome.tabs.onZoomChange.addListener(info => {
-        const zoomChangeInfo =
-            /** @type {{tabId: number, newZoomFactor: number}} */ (info);
-        if (zoomChangeInfo.tabId !== this.streamInfo_.tabId) {
-          return;
+        if (
+            !(
+                this.zoomBehavior_ === BrowserApi.ZoomBehavior.MANAGE ||
+                this.zoomBehavior_ === BrowserApi.ZoomBehavior.PROPAGATE_PARENT
+            )
+        ) {
+            return;
         }
-        listener(zoomChangeInfo.newZoomFactor);
-      });
+
+        chrome.tabs.onZoomChange.addListener((info) => {
+            const zoomChangeInfo = /** @type {{tabId: number, newZoomFactor: number}} */ (info);
+            if (zoomChangeInfo.tabId !== this.streamInfo_.tabId) {
+                return;
+            }
+            listener(zoomChangeInfo.newZoomFactor);
+        });
     }
-  }
-  
-  /**
-   * Enumeration of ways to manage zoom changes.
-   * @enum {number}
-   */
-  BrowserApi.ZoomBehavior = {
+}
+
+/**
+ * Enumeration of ways to manage zoom changes.
+ * @enum {number}
+ */
+BrowserApi.ZoomBehavior = {
     NONE: 0,
     MANAGE: 1,
     PROPAGATE_PARENT: 2
-  };
-  
-  /**
-   * Creates a BrowserApi for an extension running as a mime handler.
-   * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance
-   *     constructed using the mimeHandlerPrivate API.
-   */
-  function createBrowserApiForMimeHandlerView() {
-    return new Promise(function(resolve, reject) {
-             chrome.mimeHandlerPrivate.getStreamInfo(resolve);
-           })
-        .then(function(streamInfo) {
-          const promises = [];
-          let zoomBehavior = BrowserApi.ZoomBehavior.NONE;
-          if (streamInfo.tabId !== -1) {
-            zoomBehavior = streamInfo.embedded ?
-                BrowserApi.ZoomBehavior.PROPAGATE_PARENT :
-                BrowserApi.ZoomBehavior.MANAGE;
-            promises.push(new Promise(function(resolve) {
-                            chrome.tabs.get(streamInfo.tabId, resolve);
-                          }).then(function(tab) {
-              if (tab) {
-                streamInfo.tabUrl = tab.url;
-              }
-            }));
-          }
-          if (zoomBehavior === BrowserApi.ZoomBehavior.MANAGE) {
-            promises.push(new Promise(function(resolve) {
-              chrome.tabs.setZoomSettings(
-                  streamInfo.tabId, {mode: 'manual', scope: 'per-tab'}, resolve);
-            }));
-          }
-          return Promise.all(promises).then(function() {
+};
+
+/**
+ * Creates a BrowserApi for an extension running as a mime handler.
+ * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance
+ *     constructed using the mimeHandlerPrivate API.
+ */
+function createBrowserApiForMimeHandlerView() {
+    return new Promise(function (resolve, reject) {
+        chrome.mimeHandlerPrivate.getStreamInfo(resolve);
+    }).then(function (streamInfo) {
+        const promises = [];
+        let zoomBehavior = BrowserApi.ZoomBehavior.NONE;
+        if (streamInfo.tabId !== -1) {
+            zoomBehavior = streamInfo.embedded
+                ? BrowserApi.ZoomBehavior.PROPAGATE_PARENT
+                : BrowserApi.ZoomBehavior.MANAGE;
+            promises.push(
+                new Promise(function (resolve) {
+                    chrome.tabs.get(streamInfo.tabId, resolve);
+                }).then(function (tab) {
+                    if (tab) {
+                        streamInfo.tabUrl = tab.url;
+                    }
+                })
+            );
+        }
+        if (zoomBehavior === BrowserApi.ZoomBehavior.MANAGE) {
+            promises.push(
+                new Promise(function (resolve) {
+                    chrome.tabs.setZoomSettings(
+                        streamInfo.tabId,
+                        { mode: 'manual', scope: 'per-tab' },
+                        resolve
+                    );
+                })
+            );
+        }
+        return Promise.all(promises).then(function () {
             return BrowserApi.create(streamInfo, zoomBehavior);
-          });
         });
-  }
-  
-  /**
-   * Creates a BrowserApi instance for an extension not running as a mime handler.
-   * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance
-   *     constructed from the URL.
-   */
-  function createBrowserApiForPrintPreview() {
+    });
+}
+
+/**
+ * Creates a BrowserApi instance for an extension not running as a mime handler.
+ * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance
+ *     constructed from the URL.
+ */
+function createBrowserApiForPrintPreview() {
     const url = window.location.search.substring(1);
     const streamInfo = {
-      streamUrl: url,
-      originalUrl: url,
-      responseHeaders: {},
-      embedded: window.parent !== window,
-      tabId: -1,
+        streamUrl: url,
+        originalUrl: url,
+        responseHeaders: {},
+        embedded: window.parent !== window,
+        tabId: -1
     };
-    return new Promise(function(resolve, reject) {
-             if (!chrome.tabs) {
-               resolve();
-               return;
-             }
-             chrome.tabs.getCurrent(function(tab) {
-               streamInfo.tabId = tab.id;
-               streamInfo.tabUrl = tab.url;
-               resolve();
-             });
-           })
-        .then(function() {
-          return BrowserApi.create(streamInfo, BrowserApi.ZoomBehavior.NONE);
+    return new Promise(function (resolve, reject) {
+        if (!chrome.tabs) {
+            resolve();
+            return;
+        }
+        chrome.tabs.getCurrent(function (tab) {
+            streamInfo.tabId = tab.id;
+            streamInfo.tabUrl = tab.url;
+            resolve();
         });
-  }
-  
-  /**
-   * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance for the
-   *     current environment.
-   */
+    }).then(function () {
+        return BrowserApi.create(streamInfo, BrowserApi.ZoomBehavior.NONE);
+    });
+}
+
+/**
+ * @return {!Promise<!BrowserApi>} A promise to a BrowserApi instance for the
+ *     current environment.
+ */
 function createBrowserApi() {
     if (location.origin === 'chrome://print') {
-      return createBrowserApiForPrintPreview();
+        return createBrowserApiForPrintPreview();
     }
-  
+
     return createBrowserApiForMimeHandlerView();
-  }
+}
 
 /*
 ========================= END browser_api.js ==============================
 */
-
 
 browser_api = createBrowserApiForMimeHandlerView();
 
@@ -242,25 +255,6 @@ browser_api = createBrowserApiForMimeHandlerView();
 function Decodeuint8arr(uint8array) {
     return new TextDecoder('utf-8').decode(uint8array);
 }
-
-// function ReadAllData(responseBodyReader) {
-//     document.getElementById("test").innerHTML += "<div> Contents: </div>";
-//     function Read() {
-//         responseBodyReader.read().then(function(val) {
-//             temp = Decodeuint8arr(val.value)
-//             data += temp
-//             document.getElementById("test").innerHTML += "<div>"+temp+"</div>";
-//             if(val.done) {
-//                 console.log("Reading complete" + data.length)
-//             } else {
-//                 console.log("Reading more" + data.length)
-//                 Read()
-//             }
-//         })
-//     }
-
-//     Read();
-// }
 
 function GetDocumentTypeHadler(mimeType) {
     switch (mimeType) {
@@ -310,7 +304,20 @@ function GetUrlExtension(url) {
     return url.split(/[#?]/)[0].split('.').pop().trim();
 }
 
-function GetPdfStream(streamInfo) {
+function OnGetStreamData(stream) {
+
+}
+
+function HandleLocalFile(streamInfo) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onload = function (e) {
+        OnGetStreamData(e.target.response);
+    };
+    xmlHttp.open('GET', streamInfo.streamUrl, true); // true for asynchronous
+    xmlHttp.send(null);
+}
+
+function ConvertOnlineDocToPDFAndOpen(streamInfo) {
     $(function () {
         var link =
             'https://' +
@@ -390,8 +397,8 @@ function SetupToolbarAndDocTitle(streamInfo) {
     );
     // Get the file name
     const fileName = decodeURI(
-            streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
-        );
+        streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
+    );
     document.getElementById('file-name').innerHTML = fileName + ' (Read-Only)';
     document.title = fileName;
 
@@ -405,41 +412,51 @@ function SetupToolbarAndDocTitle(streamInfo) {
     document.getElementById('save').onclick = function () {
         executeSaveAs(
             decodeURI(
-                streamInfo.originalUrl.split('/').pop().split('#')[0].split('?')[0]
+                streamInfo.originalUrl
+                    .split('/')
+                    .pop()
+                    .split('#')[0]
+                    .split('?')[0]
             )
         );
     };
 }
 
-let mimeType_ = "";
+let mimeType_ = '';
 
 function IsWebURL(ulr_str) {
-  return (ulr_str.indexOf("http") == 0);
+    return ulr_str.indexOf('http') == 0;
 }
 
 browser_api.then(function (browserApi) {
-    if(!IsWebURL(browserApi.streamInfo_.originalUrl)) {
-      chrome.downloads.download({
-        url: browserApi.streamInfo_.originalUrl}, null);
-      return;
+    if (!IsWebURL(browserApi.streamInfo_.originalUrl)) {
+        HandleLocalFile(browserApi.streamInfo_);
+        return;
     }
 
     if (isAlreadyRedirected(browserApi.streamInfo_.originalUrl)) {
-      chrome.downloads.download({
-        url: browserApi.streamInfo_.originalUrl},
-        function(downloadId) {chrome.tabs.remove(browserApi.streamInfo_.tabId);});
-      return;
+        chrome.downloads.download(
+            {
+                url: browserApi.streamInfo_.originalUrl
+            },
+            function (downloadId) {
+                chrome.tabs.remove(browserApi.streamInfo_.tabId);
+            }
+        );
+        return;
     }
 
     mimeType_ = browserApi.streamInfo_.mimeType;
-    browserApi.streamInfo_.originalUrl = addRedirectedQueryParam(browserApi.streamInfo_.originalUrl);
-    
+    browserApi.streamInfo_.originalUrl = addRedirectedQueryParam(
+        browserApi.streamInfo_.originalUrl
+    );
+
     // Uncomment below lines for demo and replace the URL
     // document.getElementById('edit-btn').href = "http://www.bing.com";
     // document.getElementById('edit-btn').target = "_blank";
-    
+
     // comment start for demo
-    document.getElementById('edit-btn').href = 
+    document.getElementById('edit-btn').href =
         GetDocumentTypeHadler(mimeType_) +
         ':ofe|u|' +
         browserApi.streamInfo_.originalUrl;
@@ -449,72 +466,75 @@ browser_api.then(function (browserApi) {
         browserApi.streamInfo_.originalUrl +
         '" width="100%" height="100%"></iframe>';
     const fileName = decodeURI(
-      browserApi.streamInfo_.originalUrl.split('/').pop().split('#')[0].split('?')[0]
+        browserApi.streamInfo_.originalUrl
+            .split('/')
+            .pop()
+            .split('#')[0]
+            .split('?')[0]
     );
     document.title = fileName;
 });
 
 function isAlreadyRedirected(originalUrl) {
-  if (originalUrl.indexOf('?') >= 0) {
-    var queryParams = originalUrl.split('?')[1];
-    return queryParams.indexOf('edgeRedirected') != -1;
-  }
+    if (originalUrl.indexOf('?') >= 0) {
+        var queryParams = originalUrl.split('?')[1];
+        return queryParams.indexOf('edgeRedirected') != -1;
+    }
 
-  return false;
+    return false;
 }
 
 function addRedirectedQueryParam(originalUrl) {
-  if (originalUrl.indexOf('?') >= 0) {
-    return originalUrl + '&edgeRedirected';
-  }
+    if (originalUrl.indexOf('?') >= 0) {
+        return originalUrl + '&edgeRedirected';
+    }
 
-  return originalUrl + '?edgeRedirected';
+    return originalUrl + '?edgeRedirected';
 }
-
 
 function executeSaveAs(fileName) {
-  chrome.fileSystem.chooseEntry(
-      {
-        type: 'saveFile',
-        suggestedName: fileName,
-        // Saving the file with .pdf extension
-        accepts: [{extensions: [fileName.split(".").pop()]}]
-      },
-      writeUsingEntry);
+    chrome.fileSystem.chooseEntry(
+        {
+            type: 'saveFile',
+            suggestedName: fileName,
+            // Saving the file with .pdf extension
+            accepts: [{ extensions: [fileName.split('.').pop()] }]
+        },
+        writeUsingEntry
+    );
 }
 
-const writeUsingEntry = entry => {
-  if (chrome.runtime.lastError) {
-    if (chrome.runtime.lastError.message !== 'User cancelled') {
-        console.log(
-            'chrome.fileSystem.chooseEntry failed: ' +
-            chrome.runtime.lastError.message);
+const writeUsingEntry = (entry) => {
+    if (chrome.runtime.lastError) {
+        if (chrome.runtime.lastError.message !== 'User cancelled') {
+            console.log(
+                'chrome.fileSystem.chooseEntry failed: ' +
+                    chrome.runtime.lastError.message
+            );
+        }
+        return;
     }
-    return;
-  }
-  entry.createWriter(writer => {
-    writer.onwriteend = (event) => {
-      // Return early in case error has occurred, without trying to
-      // truncate the file. |onerror| is still called after returning.
-      if (event.currentTarget && event.currentTarget.error) {
-        return;
-      }
-      // |writer.length| is the length of the file content,
-      // |event.currentTarget.position| is the seek position after
-      // write (which for non error case is same as data length).
-      // Truncate is called when |writer.length| is not same as
-      // current seek position.
-      if (writer.length !== event.currentTarget.position) {
-        event.currentTarget.truncate(event.currentTarget.position);
-        return;
-      }
-      chrome.fileSystem.getDisplayPath(entry, function(path) {
-        promiseResolver.resolve({status: 'Saved', path, saveInPlace});
-      });
-    };
-    writer.onerror = (event) => {
-    };
-    writer.write(
-        new Blob([result.dataToSave], {type: mimeType_}));
-  });
+    entry.createWriter((writer) => {
+        writer.onwriteend = (event) => {
+            // Return early in case error has occurred, without trying to
+            // truncate the file. |onerror| is still called after returning.
+            if (event.currentTarget && event.currentTarget.error) {
+                return;
+            }
+            // |writer.length| is the length of the file content,
+            // |event.currentTarget.position| is the seek position after
+            // write (which for non error case is same as data length).
+            // Truncate is called when |writer.length| is not same as
+            // current seek position.
+            if (writer.length !== event.currentTarget.position) {
+                event.currentTarget.truncate(event.currentTarget.position);
+                return;
+            }
+            chrome.fileSystem.getDisplayPath(entry, function (path) {
+                promiseResolver.resolve({ status: 'Saved', path, saveInPlace });
+            });
+        };
+        writer.onerror = (event) => {};
+        writer.write(new Blob([result.dataToSave], { type: mimeType_ }));
+    });
 };
